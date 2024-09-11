@@ -1,6 +1,6 @@
-Next Js Social App built using Typescript, PostgreSQL, Tailwind CSS, React Query,Prisma, React Hook Form,Vercel DB
+## Next Js Social App built using Typescript, PostgreSQL, Tailwind CSS, React Query,Prisma, React Hook Form,Vercel DB
 
-Build still in Progress...
+## Build still in Progress...
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app).
 
