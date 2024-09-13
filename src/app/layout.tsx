@@ -15,7 +15,10 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Social Space",
+  title: {
+    template: "%s | Social Space",
+    default: "Social Space",
+  },
   description: "netxjs social app",
 };
 

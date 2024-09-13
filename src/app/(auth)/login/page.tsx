@@ -1,9 +1,14 @@
-"use client";
 import React from "react";
 import LoginForm from "./components/LoginForm";
 import Link from "next/link";
 import loginImage from "@/assets/login-image.jpg";
 import Image from "next/image";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Log In",
+};
+
 const page = () => {
   return (
     <main className="flex h-screen items-center justify-center p-5">

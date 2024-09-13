@@ -1,24 +1,36 @@
+import { NextRequest, NextResponse } from "next/server";
+import { ParamsForm } from "../followers/route";
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 import { getPostDataInclude, postPage } from "@/lib/types";
-import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET(
+  req: NextRequest,
+  { params: { userId } }: ParamsForm
+) {
   try {
+    const { user: loggedInUser } = await validateRequest();
     const cursor = req.nextUrl.searchParams.get("cursor") || undefined;
     const pageSize = 10;
-    const { user } = await validateRequest();
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!loggedInUser) {
+      return NextResponse.json(
+        { error: "unathorized access" },
+        { status: 401 }
+      );
     }
+
     const posts = await prisma.post.findMany({
-      include: getPostDataInclude(user.id),
+      where: {
+        userId,
+      },
+      include: getPostDataInclude(loggedInUser.id),
       orderBy: {
         createdAt: "desc",
       },
       take: pageSize + 1,
       cursor: cursor ? { id: cursor } : undefined,
     });
+
     const nextCursor = posts.length > pageSize ? posts[pageSize].id : null;
     const data: postPage = {
       posts: posts.slice(0, pageSize),

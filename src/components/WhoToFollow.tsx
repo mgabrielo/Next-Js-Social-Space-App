@@ -5,7 +5,8 @@ import UserAvatar from "./UserAvatar";
 import { Button } from "./ui/button";
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
-import { userDataSelect } from "@/lib/types";
+import { getUserDataSelect } from "@/lib/types";
+import FollowButton from "./FollowButton";
 
 export default async function WhoToFollow(): Promise<React.JSX.Element | null> {
   const { user } = await validateRequest();
@@ -16,8 +17,13 @@ export default async function WhoToFollow(): Promise<React.JSX.Element | null> {
       NOT: {
         id: user?.id,
       },
+      followers: {
+        none: {
+          followerId: user.id,
+        },
+      },
     },
-    select: userDataSelect,
+    select: getUserDataSelect(user.id),
     take: 5,
   });
 
@@ -45,7 +51,15 @@ export default async function WhoToFollow(): Promise<React.JSX.Element | null> {
                 </p>
               </div>
             </Link>
-            <Button>Follow</Button>
+            <FollowButton
+              userId={user.id}
+              initialState={{
+                followers: user._count.followers,
+                isFollowedByUser: user.followers.some(
+                  ({ followerId }) => followerId === user.id
+                ),
+              }}
+            ></FollowButton>
           </div>
         ))}
     </div>
