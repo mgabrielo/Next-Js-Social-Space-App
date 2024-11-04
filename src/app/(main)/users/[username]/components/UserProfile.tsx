@@ -1,5 +1,6 @@
 import FollowButton from "@/components/FollowButton";
 import FollowerCount from "@/components/FollowerCount";
+import Linkify from "@/components/Linkify";
 import UserAvatar from "@/components/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { FollowerInfo, UserData } from "@/lib/types";
@@ -53,9 +54,11 @@ export async function UserProfile({
       {user.bio && (
         <>
           <hr />
-          <div className="whitespace-pre-line overflow-hidden break-words">
-            {user.bio}
-          </div>
+          <Linkify>
+            <div className="whitespace-pre-line overflow-hidden break-words">
+              {user.bio}
+            </div>
+          </Linkify>
         </>
       )}
     </div>
