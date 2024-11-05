@@ -1,3 +1,4 @@
+import { type } from "os";
 import { z } from "zod";
 
 const requiredString = z.string().trim().min(1, "Required");
@@ -23,3 +24,10 @@ export type LogInValues = z.infer<typeof logInSchema>;
 export const createPostSchema = z.object({
   content: requiredString,
 });
+
+export const updateUserProfileSchema = z.object({
+  displayName: requiredString,
+  bio: z.string().max(400, "must be at most 400 characters"),
+});
+
+export type UpdateUserProfileValues = z.infer<typeof updateUserProfileSchema>;

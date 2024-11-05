@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { FollowerInfo, UserData } from "@/lib/types";
 import { formatNumber } from "@/lib/utils";
 import { formatDate } from "date-fns";
+import EditProfileButton from "./EditProfileButton";
 
 interface UserProfileProps {
   user: UserData;
@@ -46,7 +47,7 @@ export async function UserProfile({
           </div>
         </div>
         {user.id === loggedInUserId ? (
-          <Button>Edit Profile</Button>
+          <EditProfileButton user={user} />
         ) : (
           <FollowButton userId={user.id} initialState={followerInfo} />
         )}
