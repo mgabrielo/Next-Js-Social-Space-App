@@ -21,22 +21,22 @@ export default function UserToolTip({ children, user }: UserToolTipProps) {
   const { user: loggedInUser } = getSession();
 
   const followerState: FollowerInfo = {
-    followers: user._count.followers,
+    followers: user?._count.followers,
     isFollowedByUser: !!user.followers.some(
-      ({ followerId }) => followerId === loggedInUser.id
+      ({ followerId }) => followerId === loggedInUser?.id
     ),
   };
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
-        <TooltipContent>
-          <div className="flex max-w-80 flex-col gap-3 break-words px-1 py-2 md:min-w-52">
+        <TooltipContent className="mt-2">
+          <div className="flex max-w-52 flex-col gap-1 break-words px-1 py-2 md:min-w-52">
             <div className="flex items-center justify-between gap-2">
               <Link href={`/users/${user.username}`}>
-                <UserAvatar size={70} avatarUrl={user.avatarUrl} />
+                <UserAvatar size={40} avatarUrl={user.avatarUrl} />
               </Link>
-              {loggedInUser.id !== user.id && (
+              {loggedInUser?.id !== user?.id && (
                 <FollowButton userId={user.id} initialState={followerState} />
               )}
             </div>
@@ -55,7 +55,7 @@ export default function UserToolTip({ children, user }: UserToolTipProps) {
                 </div>
               </Linkify>
             )}
-            <FollowerCount userId={user.id} initialState={followerState} />
+            <FollowerCount userId={user?.id} initialState={followerState} />
           </div>
         </TooltipContent>
       </Tooltip>
