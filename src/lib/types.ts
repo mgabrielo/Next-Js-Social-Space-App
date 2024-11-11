@@ -30,6 +30,19 @@ export function getPostDataInclude(loggedInUserId: string) {
     user: {
       select: getUserDataSelect(loggedInUserId),
     },
+    likes: {
+      where: {
+        userId: loggedInUserId,
+      },
+      select: {
+        userId: true,
+      },
+    },
+    _count: {
+      select: {
+        likes: true,
+      },
+    },
   } satisfies Prisma.PostInclude;
 }
 
@@ -39,19 +52,6 @@ export type AuthUser = {
   displayName: string;
   avatarUrl: string | null;
 };
-
-// export const userDataSelect = {
-//   id: true,
-//   username: true,
-//   displayName: true,
-//   avatarUrl: true,
-// } satisfies Prisma.UserSelect;
-
-// export const postDataInclude = {
-//   user: {
-//     select: userDataSelect,
-//   },
-// } satisfies Prisma.PostInclude;
 
 export type UserData = Prisma.UserGetPayload<{
   select: ReturnType<typeof getUserDataSelect>;
@@ -69,4 +69,9 @@ export interface postPage {
 export interface FollowerInfo {
   followers: number;
   isFollowedByUser: boolean;
+}
+
+export interface LikeInfo {
+  likes: number;
+  isLikedByUser: boolean;
 }
