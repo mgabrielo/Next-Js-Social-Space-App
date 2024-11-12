@@ -16,20 +16,22 @@ datasource db {
 }
 
 model User {
-  id           String    @id
-  username     String    @unique
+  id           String     @id
+  username     String     @unique
   displayName  String
-  email        String?   @unique
+  email        String?    @unique
   passwordHash String?
-  googleId     String?   @unique
+  googleId     String?    @unique
   avatarUrl    String?
   bio          String?
   sessions     Session[]
   posts        Post[]
+  comments     Comment[]
   likes        Like[]
-  following    Follow[]  @relation("Following")
-  followers    Follow[]  @relation("Followers")
-  createdAt    DateTime  @default(now())
+  bookmarks    Bookmark[]
+  following    Follow[]   @relation("Following")
+  followers    Follow[]   @relation("Followers")
+  createdAt    DateTime   @default(now())
 
   @@map("users")
 }
@@ -42,12 +44,14 @@ model Session {
 }
 
 model Post {
-  id        String   @id @default(cuid())
+  id        String     @id @default(cuid())
   content   String
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+  comments  Comment[]
   likes     Like[]
+  bookmarks Bookmark[]
 
   @@map("posts")
 }
@@ -70,4 +74,28 @@ model Like {
 
   @@unique([userId, postId])
   @@map("likes")
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId])
+  @@map("bookmarks")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@map("comments")
 }

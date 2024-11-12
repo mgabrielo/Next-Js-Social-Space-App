@@ -1,5 +1,5 @@
 "use client";
-import { LikeInfo } from "@/lib/types";
+import { BookmarkInfo } from "@/lib/types";
 import React from "react";
 import { useToast } from "../ui/use-toast";
 import {
@@ -9,37 +9,41 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import kyInstance from "@/lib/ky";
-import { Heart } from "lucide-react";
+import { Bookmark, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface LikeProps {
+interface BookmarkProps {
   postId: string;
-  initialState: LikeInfo;
+  initialState: BookmarkInfo;
 }
 
-const LikeButton = ({ postId, initialState }: LikeProps) => {
+const BookmarkButton = ({ postId, initialState }: BookmarkProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const queryKey: QueryKey = ["like-info", postId];
+  const queryKey: QueryKey = ["bookmark-info", postId];
   const { data } = useQuery({
     queryKey: queryKey,
-    queryFn: () => kyInstance.get(`/api/post/${postId}/likes`).json<LikeInfo>(),
+    queryFn: () =>
+      kyInstance.get(`/api/post/${postId}/bookmarks`).json<BookmarkInfo>(),
     initialData: initialState,
     staleTime: Infinity,
   });
 
   const { mutate } = useMutation({
     mutationFn: () =>
-      data.isLikedByUser
-        ? kyInstance.delete(`/api/post/${postId}/likes`)
-        : kyInstance.post(`/api/post/${postId}/likes`),
+      data.isBookmarkedByUser
+        ? kyInstance.delete(`/api/post/${postId}/bookmarks`)
+        : kyInstance.post(`/api/post/${postId}/bookmarks`),
     onMutate: async () => {
+      toast({
+        description: `Post ${
+          data.isBookmarkedByUser ? "Removed From" : "Added to"
+        } Bookmarks`,
+      });
       await queryClient.cancelQueries({ queryKey });
-      const previousState = queryClient.getQueryData<LikeInfo>(queryKey);
-      queryClient.setQueryData<LikeInfo>(queryKey, () => ({
-        likes:
-          (previousState?.likes || 0) + (previousState?.isLikedByUser ? -1 : 1),
-        isLikedByUser: !previousState?.isLikedByUser,
+      const previousState = queryClient.getQueryData<BookmarkInfo>(queryKey);
+      queryClient.setQueryData<BookmarkInfo>(queryKey, () => ({
+        isBookmarkedByUser: !previousState?.isBookmarkedByUser,
       }));
 
       return previousState;
@@ -55,17 +59,14 @@ const LikeButton = ({ postId, initialState }: LikeProps) => {
   });
   return (
     <button onClick={() => mutate()} className="flex items-center gap-2">
-      <Heart
+      <Bookmark
         className={cn(
           "size-5",
-          data.isLikedByUser && "fill-red-500 text-red-500"
+          data.isBookmarkedByUser && "fill-primary text-primary"
         )}
       />
-      <span className="font-medium text-sm tabular-nums">
-        {data.likes} <span className="hidden sm:inline">likes</span>
-      </span>
     </button>
   );
 };
 
-export default LikeButton;
+export default BookmarkButton;
