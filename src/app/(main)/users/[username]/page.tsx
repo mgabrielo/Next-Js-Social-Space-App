@@ -1,12 +1,12 @@
 import { validateRequest } from "@/auth";
-import TrendSideBar from "@/components/TrendSideBar";
 import prisma from "@/lib/prisma";
 import { getUserDataSelect } from "@/lib/types";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-import { UserProfile } from "./components/UserProfile";
+import UserProfile from "./components/UserProfile";
 import UserPosts from "./components/UserPosts";
+import TrendSideBar from "@/components/TrendSideBar";
 
 interface pageProps {
   params: {
@@ -60,7 +60,6 @@ const Page = async ({ params: { username } }: pageProps) => {
   return (
     <main className="flex w-full min-w-0 gap-5">
       <div className="w-full min-w-0 space-y-5">
-        {/* @ts-ignore */}
         <UserProfile user={user} loggedInUserId={loggedInUser.id} />
         <div className="rounded-xl bg-card p-5 shadow-sm">
           <h2 className="text-2xl font-semibold text-center">
@@ -69,6 +68,7 @@ const Page = async ({ params: { username } }: pageProps) => {
         </div>
         <UserPosts userId={user.id} />
       </div>
+      {/* @ts-ignore */}
       <TrendSideBar />
     </main>
   );

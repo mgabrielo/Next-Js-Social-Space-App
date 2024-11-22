@@ -1,6 +1,6 @@
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
-import { CommentPage, getCommentInclude } from "@/lib/types";
+import { CommentPage, getCommentDataInclude } from "@/lib/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export interface ParamsComments {
@@ -24,7 +24,7 @@ export async function GET(
       where: {
         postId,
       },
-      include: getCommentInclude(user.id),
+      include: getCommentDataInclude(user.id),
       orderBy: {
         createdAt: "asc",
       },

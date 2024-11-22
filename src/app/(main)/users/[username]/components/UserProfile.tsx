@@ -1,3 +1,4 @@
+"use client";
 import FollowButton from "@/components/FollowButton";
 import FollowerCount from "@/components/FollowerCount";
 import Linkify from "@/components/Linkify";
@@ -12,10 +13,10 @@ interface UserProfileProps {
   user: UserData;
   loggedInUserId: string;
 }
-export async function UserProfile({
+export default function UserProfile({
   user,
   loggedInUserId,
-}: UserProfileProps): Promise<React.JSX.Element> {
+}: UserProfileProps) {
   const followerInfo: FollowerInfo = {
     followers: user._count.followers,
     isFollowedByUser: user.followers.some(

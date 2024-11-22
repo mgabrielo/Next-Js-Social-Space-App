@@ -59,8 +59,7 @@ export default async function Page({ params: { postId } }: PageProps) {
       </div>
       <div className="sticky top-[5.25rem] hidden lg:block w-80 h-fit flex-none">
         <Suspense fallback={<Loader2 className="mx-auto animate-spin" />}>
-          {/* @ts-ignore */}
-          <UserInfoSidebar user={post.user} loggedInUser={user} />
+          {user && <UserInfoSidebar user={post.user} loggedInUser={user} />}
         </Suspense>
       </div>
     </main>

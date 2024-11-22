@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client";
+import { type } from "os";
 
 export function getUserDataSelect(loggedInUserId: string) {
   return {
@@ -89,7 +90,7 @@ export interface BookmarkInfo {
   isBookmarkedByUser: boolean;
 }
 
-export function getCommentInclude(loggedInUserId: string) {
+export function getCommentDataInclude(loggedInUserId: string) {
   return {
     user: {
       select: getUserDataSelect(loggedInUserId),
@@ -98,10 +99,38 @@ export function getCommentInclude(loggedInUserId: string) {
 }
 
 export type CommentData = Prisma.CommentGetPayload<{
-  include: ReturnType<typeof getCommentInclude>;
+  include: ReturnType<typeof getCommentDataInclude>;
 }>;
 
 export interface CommentPage {
   comments: CommentData[];
   previousCursor: string | null;
+}
+
+export const NotificationInclude = {
+  issuer: {
+    select: {
+      username: true,
+      displayName: true,
+      avatarUrl: true,
+    },
+  },
+  post: {
+    select: {
+      content: true,
+    },
+  },
+} satisfies Prisma.NotificationInclude;
+
+export type NotificationData = Prisma.NotificationGetPayload<{
+  include: typeof NotificationInclude;
+}>;
+
+export interface NotificationPage {
+  notifications: NotificationData[];
+  nextCursor: string | null;
+}
+
+export interface NotificationCountInfo {
+  unreadCount: number;
 }

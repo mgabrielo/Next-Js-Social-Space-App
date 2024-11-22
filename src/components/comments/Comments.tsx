@@ -44,9 +44,13 @@ const Comments = ({ post }: CommentsProps) => {
           Load Older Comments
         </Button>
       )}
-      {status == "pending" && <Loader2 className="animate-spin mx-auto" />}
+      {status == "pending" && (
+        <div className="flex w-full pt-5 items-center">
+          <Loader2 className="animate-spin mx-auto" />
+        </div>
+      )}
       {status == "success" && !comments.length && (
-        <p className="text-muted-foreground text-center">
+        <p className="text-muted-foreground text-center p-5">
           No Comments Posted yet.
         </p>
       )}

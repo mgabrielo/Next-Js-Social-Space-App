@@ -1,10 +1,17 @@
+"use client";
 import React from "react";
-import { getTrendingTopics } from "./TrendSideBar";
 import Link from "next/link";
 import { formatNumber } from "@/lib/utils";
 
-export default async function TrendingTopics(): Promise<React.JSX.Element> {
-  const trendingTopics = await getTrendingTopics();
+export interface TrendingTopicsProps {
+  trendingTopics: {
+    hashtag: string;
+    count: number;
+  }[];
+}
+export default function TrendingTopics({
+  trendingTopics,
+}: TrendingTopicsProps) {
   return (
     <div className="space-y-5 rounded-xl bg-card p-5 shadow-sm">
       <div className="text-xl font-bold">TrendingTopics</div>

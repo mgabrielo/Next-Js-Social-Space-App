@@ -4,11 +4,12 @@ import Linkify from "@/components/Linkify";
 import UserAvatar from "@/components/UserAvatar";
 import UserToolTip from "@/components/UserToolTip";
 import { UserData } from "@/lib/types";
+import { User } from "@prisma/client";
 import Link from "next/link";
 
 interface UserInfoSidebarProps {
   user: UserData;
-  loggedInUser: UserData;
+  loggedInUser: any;
 }
 
 export default function UserInfoSidebar({

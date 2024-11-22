@@ -2,7 +2,7 @@
 
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
-import { getCommentInclude, postData } from "@/lib/types";
+import { getCommentDataInclude, postData } from "@/lib/types";
 import { createCommentSchema } from "@/lib/validation";
 
 export async function submitComment({
@@ -20,14 +20,57 @@ export async function submitComment({
 
   const { content: contentValidated } = createCommentSchema.parse({ content });
 
-  const newComment = await prisma.comment.create({
-    data: {
-      content: contentValidated,
-      postId: post.id,
-      userId: user.id,
+  const [newComment] = await prisma.$transaction([
+    prisma.comment.create({
+      data: {
+        content: contentValidated,
+        postId: post.id,
+        userId: user.id,
+      },
+      include: getCommentDataInclude(user.id),
+    }),
+    ...(post.user.id !== user.id
+      ? [
+          prisma.notification.create({
+            data: {
+              issuerId: user.id,
+              recipientId: post.user.id,
+              postId: post.id,
+              type: "COMMENT",
+            },
+          }),
+        ]
+      : []),
+  ]);
+  return newComment;
+}
+
+export async function deleteComment(id: string) {
+  const { user } = await validateRequest();
+
+  if (!user) {
+    throw Error("Unauthorized");
+  }
+
+  const comment = await prisma.comment.findUnique({
+    where: {
+      id,
     },
-    include: getCommentInclude(user.id),
   });
 
-  return newComment;
+  if (!comment) {
+    throw Error("Comment Not Found");
+  }
+
+  if (comment.userId !== user.id) {
+    throw Error("Unauthorized");
+  }
+
+  const deletedComment = await prisma.comment.delete({
+    where: {
+      id,
+    },
+    include: getCommentDataInclude(user.id),
+  });
+  return deletedComment;
 }
