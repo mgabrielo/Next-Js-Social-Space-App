@@ -3,32 +3,26 @@ import prisma from "@/lib/prisma";
 import { getUserDataSelect } from "@/lib/types";
 import { unstable_cache } from "next/cache";
 
-export const getUsersToFollow = unstable_cache(
-  async () => {
-    const { user } = await validateRequest();
-    const usersToFollow =
-      user &&
-      (await prisma.user.findMany({
-        where: {
-          NOT: {
-            id: user?.id,
-          },
-          followers: {
-            none: {
-              followerId: user.id,
-            },
+export const getUsersToFollow = async () => {
+  const { user } = await validateRequest();
+  const usersToFollow =
+    user &&
+    (await prisma.user.findMany({
+      where: {
+        NOT: {
+          id: user?.id,
+        },
+        followers: {
+          none: {
+            followerId: user.id,
           },
         },
-        select: getUserDataSelect(user.id),
-        take: 5,
-      }));
-    return usersToFollow;
-  },
-  ["users_to_follow"],
-  {
-    revalidate: 2 * 60 * 60,
-  }
-);
+      },
+      select: getUserDataSelect(user.id),
+      take: 5,
+    }));
+  return usersToFollow;
+};
 
 export const getTrendingTopics = unstable_cache(
   async () => {

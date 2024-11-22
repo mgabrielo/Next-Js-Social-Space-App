@@ -7,6 +7,7 @@ import { cache } from "react";
 import UserProfile from "./components/UserProfile";
 import UserPosts from "./components/UserPosts";
 import TrendSideBar from "@/components/TrendSideBar";
+import { getTrendingTopics, getUsersToFollow } from "@/hooks/new-hook";
 
 interface pageProps {
   params: {
@@ -56,7 +57,8 @@ const Page = async ({ params: { username } }: pageProps) => {
   }
 
   const user = await getUser(username, loggedInUser.id);
-
+  const trendingTopics = await getTrendingTopics();
+  const usersToFollow = await getUsersToFollow();
   return (
     <main className="flex w-full min-w-0 gap-5">
       <div className="w-full min-w-0 space-y-5">
@@ -68,8 +70,12 @@ const Page = async ({ params: { username } }: pageProps) => {
         </div>
         <UserPosts userId={user.id} />
       </div>
-      {/* @ts-ignore */}
-      <TrendSideBar />
+      {usersToFollow && (
+        <TrendSideBar
+          trendingTopics={trendingTopics}
+          usersToFollow={usersToFollow}
+        />
+      )}
     </main>
   );
 };

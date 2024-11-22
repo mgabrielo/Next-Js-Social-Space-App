@@ -1,12 +1,15 @@
 import { Metadata } from "next";
 import BookmarkFeed from "./BookmarkFeed";
 import TrendSideBar from "@/components/TrendSideBar";
+import { getTrendingTopics, getUsersToFollow } from "@/hooks/new-hook";
 
 export const metadata: Metadata = {
   title: "Bookmarks",
 };
 
-export default function Page() {
+export default async function Page() {
+  const trendingTopics = await getTrendingTopics();
+  const usersToFollow = await getUsersToFollow();
   return (
     <main className="flex w-full min-w-0 gap-5">
       <div className="w-full min-w-0 space-y-5">
@@ -15,8 +18,12 @@ export default function Page() {
         </div>
         <BookmarkFeed />
       </div>
-      {/* @ts-ignore */}
-      <TrendSideBar />
+      {usersToFollow && (
+        <TrendSideBar
+          trendingTopics={trendingTopics}
+          usersToFollow={usersToFollow}
+        />
+      )}
     </main>
   );
 }
