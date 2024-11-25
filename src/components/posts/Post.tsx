@@ -28,7 +28,10 @@ const Post = ({ post }: PostProps) => {
 
   return (
     <article className="group/post space-y-3 rounded-xl bg-card p-4 shadow-sm">
-      <div className="flex flex-col gap-3" onClick={handlePostClick}>
+      <div
+        className="flex flex-col gap-3 cursor-pointer"
+        onClick={handlePostClick}
+      >
         <div className="flex justify-between">
           <div className=" flex flex-wrap gap-3">
             <UserToolTip user={post.user}>

@@ -5,6 +5,7 @@ import { unstable_cache } from "next/cache";
 
 export const getUsersToFollow = async () => {
   const { user } = await validateRequest();
+
   const usersToFollow =
     user &&
     (await prisma.user.findMany({
@@ -21,6 +22,7 @@ export const getUsersToFollow = async () => {
       select: getUserDataSelect(user.id),
       take: 5,
     }));
+
   return usersToFollow;
 };
 
@@ -40,6 +42,6 @@ export const getTrendingTopics = unstable_cache(
   },
   ["trending_topics"],
   {
-    revalidate: 1 * 60 * 60,
+    revalidate: 30 * 60 * 60,
   }
 );
